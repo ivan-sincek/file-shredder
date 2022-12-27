@@ -24,14 +24,12 @@ if ($args.Count -ne 1) {
 		} else {
 			$file.Attributes = "Normal";
 			$sectors = [Math]::Ceiling($file.Length / $size);
-			$buffer = New-Object Byte[] $size;
-			$rng = New-Object Security.Cryptography.RNGCryptoServiceProvider;
 			$stream = New-Object IO.FileStream($file.FullName, [IO.FileAccess]::Write);
 			# number of rewrites (seven)
 			for ($i = 0; $i -lt 7; $i++) {
 				$stream.Position = 0;
 				for ($j = 0; $j -lt $sectors; $j++) {
-					$rng.GetBytes($buffer);
+					$buffer = [Security.Cryptography.RandomNumberGenerator]::GetBytes($size);
 					$stream.Write($buffer, 0, $buffer.Length);
 				}
 			}
